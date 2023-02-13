@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from 'react'
-
+import './Play.css'
 export default function Play() {
     const cross = 3;
     const [availableNumbers,setAvailableNumbers]  = useState([])
     const [fillSlots,setFillSlots] = useState([])
+    const [userPoints,setUserPoints] = useState(0);
+    const [aiPoints,setAiPoints] = useState(0);
     console.log(availableNumbers);
     console.log(fillSlots);
     const [isUserTurn,setIsUserTurn] = useState(true);
+    const reset = ()=>{
+        setFillSlots([...Array.from({length:cross*cross},()=>0)]);
+        resetColor();
+        setIsUserTurn(true)
+    }
     const checkEach = (a,b,c)=>{
         const dp = 15-(fillSlots[a]+fillSlots[b]+fillSlots[c]);
         let unAnswered = [];
@@ -16,7 +23,12 @@ export default function Play() {
             unAnswered.push(b);
         if(fillSlots[c]==0)
             unAnswered.push(c);
-        return [dp,unAnswered]
+        return [dp,unAnswered,[a,b,c]]
+    }
+    const resetColor  = ()=>{
+        for(let i=0;i<9;i++){
+            document.getElementById(i).classList.remove('win1','win2','win3');
+        }
     }
     const validDateAll = ()=>{
         //row check
@@ -35,29 +47,61 @@ export default function Play() {
         console.log(forward,backWard);
         //row
         if(row1[0] === 0 && row1[1].length===0){
+            document.getElementById(row1[2][0]).classList.add("win1");
+            document.getElementById(row1[2][1]).classList.add("win2");
+            document.getElementById(row1[2][2]).classList.add("win3");
+            setUserPoints(pre=>pre+1)
             alert("hurrey! you won");
         }
         else if(row2[0] === 0 && row2[1].length===0){
+            document.getElementById(row2[2][0]).classList.add("win1");
+            document.getElementById(row2[2][1]).classList.add("win2");
+            document.getElementById(row2[2][2]).classList.add("win3");
+            setUserPoints(pre=>pre+1)
             alert("hurrey! you won");
         }
         else if(row3[0] === 0 && row3[1].length===0){
+            document.getElementById(row3[2][0]).classList.add("win1");
+            document.getElementById(row3[2][1]).classList.add("win2");
+            document.getElementById(row3[2][2]).classList.add("win3");
+            setUserPoints(pre=>pre+1)
             alert("hurrey! you won");
         }
         //column
         else if(column1[0] === 0 && column1[1].length===0){
+            document.getElementById(column1[2][0]).classList.add("win1");
+            document.getElementById(column1[2][1]).classList.add("win2");
+            document.getElementById(column1[2][2]).classList.add("win3");
+            setUserPoints(pre=>pre+1)
             alert("hurrey! you won");
         }
         else if(column2[0] === 0 && column2[1].length===0){
+            document.getElementById(column2[2][0]).classList.add("win1");
+            document.getElementById(column2[2][1]).classList.add("win2");
+            document.getElementById(column2[2][2]).classList.add("win3");
+            setUserPoints(pre=>pre+1)
             alert("hurrey! you won");
         }
         else if(column3[0] === 0 && column3[1].length===0){
+            document.getElementById(column3[2][0]).classList.add("win1");
+            document.getElementById(column3[2][1]).classList.add("win2");
+            document.getElementById(column3[2][2]).classList.add("win3");
+            setUserPoints(pre=>pre+1)
             alert("hurrey! you won");
         }
         //diagonal
         else if(backWard[0] === 0 && backWard[1].length===0){
+            document.getElementById(backWard[2][0]).classList.add("win1");
+            document.getElementById(backWard[2][1]).classList.add("win2");
+            document.getElementById(backWard[2][2]).classList.add("win3");
+            setUserPoints(pre=>pre+1)
             alert("hurrey! you won");
         }
         else if(forward[0] === 0 && forward[1].length===0){
+            document.getElementById(forward[2][0]).classList.add("win1");
+            document.getElementById(forward[2][1]).classList.add("win2");
+            document.getElementById(forward[2][2]).classList.add("win3");
+            setUserPoints(pre=>pre+1)
             alert("hurrey! you won");
         }
         // setIsUserTurn(true);
@@ -136,7 +180,12 @@ export default function Play() {
                 if(!fillSlots.includes(allSlostsBoxes[k][0]) && allSlostsBoxes[k][0]<=9 && allSlostsBoxes[k][0]>0){
                     fillSlots[allSlostsBoxes[k][1][0]] = allSlostsBoxes[k][0];
                     setFillSlots([...fillSlots]);
+                    document.getElementById(allSlostsBoxes[k][2][0]).classList.add("win1");
+                    document.getElementById(allSlostsBoxes[k][2][1]).classList.add("win2");
+                    document.getElementById(allSlostsBoxes[k][2][2]).classList.add("win3");
+                    setAiPoints(pre=>pre+1)
                     alert("hey AI WON!");
+                    // document.getElementById(allSlostsBoxes[k][1])
                     return;
                 }
             }
@@ -211,32 +260,44 @@ export default function Play() {
         setFillSlots([...Array.from({length:cross*cross},()=>0)]);
     },[])
   return (
-
-    <div className='container' style={{width:'80%',height:'100vh'}} disabled>
-        {
-            availableNumbers.map((val,key)=>{
-                return (
-                    <input style={{width:'30%',height:'30px'}} key={key} id={key} type='number' disabled={fillSlots[key]!==0 && true} value={(fillSlots[key]!=0)?fillSlots[key]:''} onChange={(e)=>{
-                        if(e.target.value>cross*cross || e.target.value<=0){
-                            alert(`hey range is between 1 - ${cross*cross}`);
-                        }
-                        else if(fillSlots.includes(parseInt(e.target.value))){
-                            alert("duplicate values are not allowed!");
-                        }
-                        else if(!isUserTurn){
-                            alert("please let AI to Keep its choice!");
-                        }
-                        else{
-                            fillSlots[key] = parseInt(e.target.value);
-                            setFillSlots([...fillSlots]);
-                            setIsUserTurn(false);
-                            validDateAll()
-                            AIUser()
-                        }
-                    }}/>
-                )
-            })
-        }
+    <div>
+        <div className='Header' style={{display:'flex',justifyContent:'space-around'}}>
+            <div style={{float:'left'}}>Your Points - {userPoints}</div>
+            <h3>{(isUserTurn)?"Your Turn":'AI Turn'}</h3>
+            <div style={{float:'right'}}>Your Points - {aiPoints}</div>
+        </div>    
+        <div style={{width:'100vw',height:'100vh',display:'flex',alignItems:'center'}}>
+            <div className='container' style={{width:'30%',marginLeft:'auto',marginRight:'auto'}}>
+                {
+                    availableNumbers.map((val,key)=>{
+                        return (
+                            <input style={{width:'30%',height:'30px',textAlign:'center'}} key={key} id={key} type='number' disabled={fillSlots[key]!==0 && true} value={(fillSlots[key]!=0)?fillSlots[key]:''} onChange={(e)=>{
+                                if(e.target.value>cross*cross || e.target.value<=0){
+                                    alert(`hey range is between 1 - ${cross*cross}`);
+                                }
+                                else if(fillSlots.includes(parseInt(e.target.value))){
+                                    alert("duplicate values are not allowed!");
+                                }
+                                else if(!isUserTurn){
+                                    alert("please let AI to Keep its choice!");
+                                }
+                                else{
+                                    fillSlots[key] = parseInt(e.target.value);
+                                    setFillSlots([...fillSlots]);
+                                    setIsUserTurn(false);
+                                    validDateAll()
+                                    AIUser()
+                                }
+                            }}/>
+                        )
+                    })
+                    
+                }
+                <button className="btn btn-warning" style={{marginTop:'5px',backgroundColor:'#FFC101',padding:'5px 13px 5px 13px',border:'none'}} onClick={()=>{
+                    reset();
+                }}>Reset</button>
+            </div>
+        </div>
     </div>
   )
 }
