@@ -242,18 +242,21 @@ export default function Play() {
             }
         }
         //step:4 -> if there is no option select any block and keep any number
+        console.log("step 4")
         for(let i = 0;i<9;i++){
             if(fillSlots[i]==0){
                 for(let k=1;k<10;k++){
                     if(!fillSlots.includes(k)){
                         fillSlots[i] = k;
-                        break;
+                        setFillSlots([...fillSlots])
+                        setIsUserTurn(true);
+                        return;
                     }
                 }
             }
         }
         // validDateAll();
-        setIsUserTurn(true);
+        
     }
     useEffect(()=>{
         setAvailableNumbers([...Array.from({length: cross*cross}, (_, i) => i + 1)]);
@@ -264,7 +267,7 @@ export default function Play() {
         <div className='Header' style={{display:'flex',justifyContent:'space-around'}}>
             <div style={{float:'left'}}>Your Points - {userPoints}</div>
             <h3>{(isUserTurn)?"Your Turn":'AI Turn'}</h3>
-            <div style={{float:'right'}}>Your Points - {aiPoints}</div>
+            <div style={{float:'right'}}>AI Points - {aiPoints}</div>
         </div>    
         <div style={{width:'100vw',height:'100vh',display:'flex',alignItems:'center'}}>
             <div className='container' style={{width:'30%',marginLeft:'auto',marginRight:'auto'}}>
